@@ -8,7 +8,7 @@ import config
 from discord.ext import commands
 import traceback
 from interface import is_confirmed
-
+import utils
 class AdminCog(commands.Cog):
     def __init__(self, bot):
         importlib.reload(config)
@@ -21,7 +21,7 @@ class AdminCog(commands.Cog):
     @commands.command(name="reload", aliases=["리로드"], brief="모듈 핫리로드")
     async def reload(self, ctx, path):
         if path == "*":
-            for path in config.extension_list:
+            for path in config.EXTENSION_LIST:
                 await ctx.send(f"{path} 모듈을 리로드 하는중...")
                 self.bot.reload_extension(path)
         else:
