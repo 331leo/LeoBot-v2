@@ -9,10 +9,12 @@ from discord.ext import commands
 import traceback
 from interface import is_confirmed
 import utils
+import typing 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
         importlib.reload(config)
-        
+        self.db = bot.db
+        self.logger = bot.logger
         self.bot = bot
         
     async def cog_check(self, ctx):
