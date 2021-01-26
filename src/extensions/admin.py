@@ -16,9 +16,12 @@ class AdminCog(commands.Cog):
         self.db = bot.db
         self.logger = bot.logger
         self.bot = bot
+        self.check = utils.checks.permissions(bot.db)
         
-    async def cog_check(self, ctx):
-        return await self.bot.is_owner(ctx.author)
+        for cmds in self.get_commands():
+            cmds.add_check(self.check.registered)
+            cmds.add_check(self.check.master)
+        
         
     @commands.command(name="reload", aliases=["리로드"], brief="모듈 핫리로드")
     async def reload(self, ctx, path):
