@@ -33,6 +33,10 @@ class AdminCog(commands.Cog):
             await ctx.send(f"extensions.{path} 모듈을 리로드 하는중...")
             self.bot.reload_extension(f"extensions.{path}")
         await ctx.send(f"모듈 리로드 성공")
+    @commands.command(name="강제초기설정")
+    async def force_init_bot(self, ctx):
+        for guild in self.bot.guilds:
+            await ctx.send(await utils.setup_guild(self.bot,guild))
 
     @commands.command(name="uptime", aliases=["업타임"], brief="업타임")
     async def uptime(self, ctx):

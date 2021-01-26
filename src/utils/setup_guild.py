@@ -3,7 +3,7 @@ import discord
 
 async def setup_guild(bot, guild:discord.Guild):
     base_config = {
-        "send_channel": guild.system_channel.id if guild.system_channel else None,
+        "send_channel": "{system_channel}",
         "join": True,
         "remove": True,
         "change_nick": False,
@@ -13,5 +13,6 @@ async def setup_guild(bot, guild:discord.Guild):
         }
     try:
         await bot.db.guilds.insert_one({"guildId": guild.id, "member_log_config": base_config})
+        return {"guildId": guild.id}
     except Exception as e:
         bot.logger.exception(f"Error on setup_guild: {e}")
