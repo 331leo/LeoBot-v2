@@ -27,6 +27,7 @@ class LeoBot(commands.AutoShardedBot):
         self.logger = logger
         self.dbclient = motor.motor_asyncio.AsyncIOMotorClient(f"mongodb://{config.MONGO_DB_USERNAME}:{config.MONGO_DB_PASSWORD}@{config.MONGO_DB_HOST}:{config.MONGO_DB_PORT}")
         self.db = self.dbclient.LeoBot
+        self.version = config.VERSION
         self.logger.info(f"Successfully Connected to mongodb://{config.MONGO_DB_USERNAME}:*******@{config.MONGO_DB_HOST}:{config.MONGO_DB_PORT}")
         self.KBClient = koreanbots.Client(self, config.KOREAN_BOTS_TOKEN)
         for ext in config.EXTENSION_LIST:
