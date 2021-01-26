@@ -6,11 +6,12 @@ import discord
 from discord.ext import commands
 import config
 import motor.motor_asyncio
+import koreanbots
 with open("logging.json") as f:
     logging.config.dictConfig(json.load(f))
 
 
-class DiscordBot(commands.AutoShardedBot):
+class LeoBot(commands.AutoShardedBot):
 
     async def on_ready(self):
         self.logger.info(f"Logged in as {self.user}, Bot Version {config.VERSION}")
@@ -27,11 +28,14 @@ class DiscordBot(commands.AutoShardedBot):
         self.dbclient = motor.motor_asyncio.AsyncIOMotorClient(f"mongodb://{config.MONGO_DB_USERNAME}:{config.MONGO_DB_PASSWORD}@{config.MONGO_DB_HOST}:{config.MONGO_DB_PORT}")
         self.db = self.dbclient.LeoBot
         self.logger.info(f"Successfully Connected to mongodb://{config.MONGO_DB_USERNAME}:*******@{config.MONGO_DB_HOST}:{config.MONGO_DB_PORT}")
+        self.KBClient = koreanbots.Client(self, config.KOREAN_BOTS_TOKEN)
         for ext in config.EXTENSION_LIST:
             self.load_extension(ext)
+            
 
 
-bot = DiscordBot(logger=logging.getLogger("bot"))
+
+bot = LeoBot(logger=logging.getLogger("bot"))
 
 
 bot.run(config.BOT_TOKEN)

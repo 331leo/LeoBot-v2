@@ -11,4 +11,7 @@ BOT_INTENT_PRESENCES = True
 MONGO_DB_HOST = "example.com" #example.com
 MONGO_DB_USERNAME = "root"  #root
 MONGO_DB_PASSWORD = "MyPassWord123!"  #MyPassWord123!
-MONGO_DB_PORT = 27017 #27017
+MONGO_DB_PORT = 27017  #27017
+
+#External Services Credential
+KOREAN_BOTS_TOKEN = "YOUR KOREANBOTS.DEV TOKEN"
