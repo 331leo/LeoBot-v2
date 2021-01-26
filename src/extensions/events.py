@@ -7,6 +7,7 @@ from utils import exceptions
 import utils
 import template.event_embed_gen
 from itertools import cycle
+import datetime
 #await self.bot.db.guilds.find_one_and_update({"guildId": ctx.guild.id},{"$set":{"member_log_config": {"send_channel":ctx.channel.id,"join_leave":True,"change_nick":False,"change_roles":False}}})
 class EventsCog(commands.Cog):
     def __init__(self, bot):
@@ -27,7 +28,10 @@ class EventsCog(commands.Cog):
     @commands.Cog.listener('on_command_error')
     async def on_command_error(self, ctx: commands.Context, error: Exception):
         print(error)
-
+        if isinstance(error, exceptions.PermError.NotRegistered):
+            self.logger.exception(f"Not Registered User: {ctx.author.id}")
+            await ctx.send(embed=discord.Embed(title="가입이 필요합니다.",description="레오봇의 모든 기능을 이용하시려면,\n`=가입` 명령어를 통해 레오봇에 가입해주세요!",color=utils.colormap['aqua'],timestamp=datetime.datetime.utcnow()))
+            return
 
     #멤버 이벤트 헨들러
     async def get_guild_listener_config(self, guild: discord.Guild):
