@@ -23,7 +23,7 @@ class LeoBot(commands.AutoShardedBot):
         intents = discord.Intents.default()
         intents.members = config.BOT_INTENT_MEMBERS
         intents.presences = config.BOT_INTENT_PRESENCES
-        super().__init__(commands.when_mentioned_or("="), intents=intents)
+        super().__init__(commands.when_mentioned_or(*config.COMMAND_PREFIXS), intents=intents)
         self.logger = logger
         self.dbclient = motor.motor_asyncio.AsyncIOMotorClient(f"mongodb://{config.MONGO_DB_USERNAME}:{config.MONGO_DB_PASSWORD}@{config.MONGO_DB_HOST}:{config.MONGO_DB_PORT}")
         self.db = self.dbclient.LeoBot

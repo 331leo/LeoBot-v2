@@ -1,6 +1,7 @@
 #Bot Settings
 VERSION = "0.0.0"
 EXTENSION_LIST = ["extensions.admin"]
+COMMAND_PREFIXS = ["=", "ㅇㅇ아"]
 
 #Bot Settings
 BOT_TOKEN = "YOUR BOT TOKEN"
