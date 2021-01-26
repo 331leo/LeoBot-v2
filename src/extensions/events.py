@@ -29,7 +29,7 @@ class EventsCog(commands.Cog):
     async def on_command_error(self, ctx: commands.Context, error: Exception):
         print(error)
         if isinstance(error, exceptions.PermError.NotRegistered):
-            self.logger.exception(f"Not Registered User: {ctx.author.id}")
+            self.logger.info(f"Not Registered User: {ctx.author.id}")
             await ctx.send(embed=discord.Embed(title="가입이 필요합니다.",description="레오봇의 모든 기능을 이용하시려면,\n`=가입` 명령어를 통해 레오봇에 가입해주세요!",color=utils.colormap['aqua'],timestamp=datetime.datetime.utcnow()))
             return
 
