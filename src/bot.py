@@ -5,6 +5,7 @@ import os
 import discord
 from discord.ext import commands
 import config
+import motor
 with open("logging.json") as f:
     logging.config.dictConfig(json.load(f))
 
@@ -21,7 +22,9 @@ class DiscordBot(commands.AutoShardedBot):
         intents = discord.Intents.default()
         intents.members = config.BOT_INTENT_MEMBERS
         intents.presences = config.BOT_INTENT_PRESENCES
-        super().__init__(commands.when_mentioned_or("="),intents=intents)
+        super().__init__(commands.when_mentioned_or("="), intents=intents)
+        self.dbclient = motor.motor_asyncio.AsyncIOMotorClient(f"mongodb://{dbusername}:{dbpassword}@{dbhost}:{dbport}")
+        self.db = self.dbclient.LeoBot
         self.logger = logger
         for ext in config.EXTENSION_LIST:
             self.load_extension(ext)
