@@ -7,7 +7,7 @@ import discord
 import config
 from discord.ext import commands
 import traceback
-from interface import is_confirmed
+from utils.interface import is_confirmed
 import utils
 import typing 
 class AdminCog(commands.Cog):
