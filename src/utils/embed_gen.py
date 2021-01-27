@@ -48,7 +48,7 @@ def success_embed(ctx, title, description, footer: Optional[str] = None, author=
     embed = discord.Embed(title=title,
                           description=description,
                           color=utils.colormap['lightgreen'],
-                          timestamp=datetime.datetime.now()
+                          timestamp=datetime.datetime.utcnow()
                           )
     if author:
         embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
@@ -59,7 +59,7 @@ def prompt_embed(ctx, title, description, footer: Optional[str] = None, author=F
     embed = discord.Embed(title=title,
                           description=description,
                           color=utils.colormap['yellow'],
-                          timestamp=datetime.datetime.now()
+                          timestamp=datetime.datetime.utcnow()
                           )
     if author:
         embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
@@ -70,7 +70,7 @@ def info_embed(ctx, title, description, footer: Optional[str] = None, author=Fal
     embed = discord.Embed(title=title,
                           description=description,
                           color=utils.colormap['skyblue'],
-                          timestamp=datetime.datetime.now()
+                          timestamp=datetime.datetime.utcnow()
                           )
     if author:
         embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
@@ -81,7 +81,7 @@ def error_embed(ctx, title, description, footer: Optional[str] = None, author=Fa
     embed = discord.Embed(title=title,
                           description=description,
                           color=utils.colormap['red'],
-                          timestamp=datetime.datetime.now()
+                          timestamp=datetime.datetime.utcnow()
                           )
     if author:
         embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))

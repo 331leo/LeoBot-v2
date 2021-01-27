@@ -22,18 +22,26 @@ class EventsCog(commands.Cog):
     async def change_bot_status(self):
         await self.bot.change_presence(activity=discord.Game(next(self.statusList).format(version=self.bot.version, server_count=len(self.bot.guilds), user_count=len(self.bot.users))))
     
-
+    def command_error_logger(self, ctx, text):
+        self.logger.info(f"CMD_ERROR {text}: {ctx.author}({ctx.author.id}) => {ctx.guild}({ctx.guild.id}):{ctx.channel}({ctx.channel.id}) => {ctx.message.content}")
+    
     #커멘드 에러 핸들러
     @commands.Cog.listener('on_command_error')
     async def on_command_error(self, ctx: commands.Context, error: Exception):
         print(error)
         if isinstance(error, exceptions.PermError.NotRegistered):
-            self.logger.info(f"Not Registered User: {ctx.author.id}")
-            await ctx.send(embed=discord.Embed(title="가입이 필요합니다.",description="레오봇의 모든 기능을 이용하시려면,\n`=가입` 명령어를 통해 레오봇에 가입해주세요!",color=utils.colormap['aqua'],timestamp=datetime.datetime.utcnow()))
+            self.command_error_logger(ctx, "가입되지 않은 계정")
+            await ctx.send(embed=utils.embed_gen.info_embed(ctx,"가입이 필요합니다",f"레오봇의 모든 기능을 이용하시려면,\n`{config.COMMAND_PREFIXS[0]}가입` 명령어를 통해 레오봇에 가입해주세요!",author=True))
             return
         
         if isinstance(error, exceptions.PermError.NotBotMaster):
+            self.command_error_logger(ctx, "봇 관리자용 명령어 권한에러")
             await ctx.send(embed=utils.embed_gen.NoUserPerm(ctx, "BotMaster"))
+            return
+        
+        if isinstance(error, exceptions.PermError.AlreadyRegistered):
+            self.command_error_logger(ctx, "이미 가입된 유저")
+            await ctx.send(embed=utils.embed_gen.error_embed(ctx, "이미 가입된 유저입니다!", f"이미 가입되어있는 계정입니다!\n`{config.COMMAND_PREFIXS[0]}도움말` 명령어로 레오봇의 더 많은 기능을 알아보세요!", f"탈퇴/개인정보 파기를 원하시면 `{config.COMMAND_PREFIXS[0]}문의` 명령어로 문의해주세요!", author=False))
             return
 
     #멤버 이벤트 헨들러
