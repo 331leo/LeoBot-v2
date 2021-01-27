@@ -17,3 +17,6 @@ class PermError:
     class BlacklistedUser(commands.CheckFailure):
         def __str__(self):
             return "BlackListed User"
+    class AlreadyRegistered(commands.CheckFailure):
+        def __str__(self):
+            return "Already Registered User"

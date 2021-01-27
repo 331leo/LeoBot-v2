@@ -34,3 +34,28 @@ def member_nick_change(member_before, member_after, guild_config):
                           )
     embed.set_footer(text=f"멤버로그 설정: {config.COMMAND_PREFIXS[0]}멤버로그")
     return embed
+
+def NoUserPerm(ctx, perm):
+    embed = discord.Embed(title=f"{config.NO_EMOJI_STRING} 유저 권한 부족",
+                          description=f"{ctx.author.mention}님은 `{ctx.command}` 명령어를 실행할 권한이 없습니다.",
+                          color=utils.colormap['red'],
+                          timestamp=datetime.datetime.utcnow()
+                          )
+    embed.set_footer(f"`{perm}` 권한 필요")
+    return embed
+def success_embed(ctx, title, description):
+    embed = discord.Embed(title=title,
+                          description=description,
+                          color=utils.colormap['lightgreen'],
+                          timestamp=datetime.datetime.now()
+                          )
+    embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
+    return embed
+def prompt_embed(ctx, title, description):
+    embed = discord.Embed(title=title,
+                          description=description
+                          color=utils.colormap['yellow'],
+                          timestamp=datetime.datetime.now()
+                          )
+    embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
+    return embed
