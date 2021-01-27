@@ -80,10 +80,11 @@ class EventsCog(commands.Cog):
             guild_config = self.format_guild_config(await self.get_guild_listener_config(member_before.guild),member_before.guild)
             if guild_config['change_nick']:
                 await self.bot.get_channel(guild_config['send_channel']).send(embed=utils.embed_gen.member_nick_change(member_before, member_after, guild_config))
+
         if member_before.roles != member_after.roles:
             guild_config = self.format_guild_config(await self.get_guild_listener_config(member_before.guild),member_before.guild)
             if guild_config['change_roles']:
-                pass
+                await self.bot.get_channel(guild_config['send_channel']).send(embed=utils.embed_gen.member_roles_change(member_before, member_after, guild_config))
 
 def setup(bot):
     bot.add_cog(EventsCog(bot))

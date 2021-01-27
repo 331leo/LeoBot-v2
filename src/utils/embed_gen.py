@@ -36,6 +36,22 @@ def member_nick_change(member_before, member_after, guild_config):
     embed.set_footer(text=f"멤버로그 설정: {config.COMMAND_PREFIXS[0]}멤버로그")
     return embed
 
+def member_roles_change(member_before, member_after, guild_config):
+    roles_removed = list(set(member_before.roles) - set(member_after.roles))
+    roles_added = list(set(member_after.roles) - set(member_before.roles))
+    text = ""
+    for role in roles_removed:
+        text += f"제거됨{config.NO_EMOJI_STRING}: {role.mention}\n"
+    for role in roles_added:
+        text+=f"추가됨{config.YES_EMOJI_STRING}: {role.mention}\n"
+    embed = discord.Embed(title=f"역할 변경",
+                          description=f"**{member_after.mention} 님의 역할**\n"+text,
+                          color=utils.colormap['yellowgreen'],
+                          timestamp=datetime.datetime.utcnow()
+                          )
+    embed.set_footer(text=f"멤버로그 설정: {config.COMMAND_PREFIXS[0]}멤버로그")
+    return embed
+
 def NoUserPerm(ctx, perm):
     embed = discord.Embed(title=f"{config.NO_EMOJI_STRING} 유저 권한 부족",
                           description=f"{ctx.author.mention}님은 `{ctx.command}` 명령어를 실행할 권한이 없습니다.",
