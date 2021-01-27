@@ -53,7 +53,7 @@ class AdminCog(commands.Cog):
     @commands.command(name="shutdown", aliases=["종료"], brief="봇 종료")
     async def shutdown(self, ctx):
         prompt = await ctx.send("봇을 종료할까요?")
-        if await is_confirmed(self.bot, ctx, prompt):
+        if await is_confirmed(ctx, prompt):
             await ctx.send("ㅂㅇ")
             await ctx.bot.logout()
     @commands.command(name='eval')

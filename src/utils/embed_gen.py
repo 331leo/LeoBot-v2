@@ -2,6 +2,7 @@ import datetime
 import config
 import discord
 import utils
+from typing import Optional, Union
 KST = datetime.timedelta(hours=9)
         
 
@@ -41,21 +42,49 @@ def NoUserPerm(ctx, perm):
                           color=utils.colormap['red'],
                           timestamp=datetime.datetime.utcnow()
                           )
-    embed.set_footer(f"`{perm}` 권한 필요")
+    embed.set_footer(text=f"`{perm}` 권한 필요")
     return embed
-def success_embed(ctx, title, description):
+def success_embed(ctx, title, description, footer: Optional[str] = None, author=False):
     embed = discord.Embed(title=title,
                           description=description,
                           color=utils.colormap['lightgreen'],
                           timestamp=datetime.datetime.now()
                           )
-    embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
+    if author:
+        embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
+    if footer:
+        embed.set_footer(text=footer)
     return embed
-def prompt_embed(ctx, title, description):
+def prompt_embed(ctx, title, description, footer: Optional[str] = None, author=False):
     embed = discord.Embed(title=title,
-                          description=description
+                          description=description,
                           color=utils.colormap['yellow'],
                           timestamp=datetime.datetime.now()
                           )
-    embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
+    if author:
+        embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
+    if footer:
+        embed.set_footer(text=footer)
+    return embed
+def info_embed(ctx, title, description, footer: Optional[str] = None, author=False):
+    embed = discord.Embed(title=title,
+                          description=description,
+                          color=utils.colormap['skyblue'],
+                          timestamp=datetime.datetime.now()
+                          )
+    if author:
+        embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
+    if footer:
+        embed.set_footer(text=footer)
+    return embed
+def error_embed(ctx, title, description, footer: Optional[str] = None, author=False):
+    embed = discord.Embed(title=title,
+                          description=description,
+                          color=utils.colormap['red'],
+                          timestamp=datetime.datetime.now()
+                          )
+    if author:
+        embed.set_author(name=f"{ctx.author}", icon_url=str(ctx.author.avatar_url))
+    if footer:
+        embed.set_footer(text=footer)
     return embed

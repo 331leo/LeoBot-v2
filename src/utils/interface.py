@@ -4,8 +4,8 @@ import discord
 from discord.ext import commands
 
 
-async def is_confirmed(bot:commands.Bot ,ctx: commands.Context, message: discord.Message) -> bool:
-    emojis = [bot.get_emoji(config.YES_EMOJI_INT), bot.get_emoji(config.NO_EMOJI_INT)]
+async def is_confirmed(ctx: commands.Context, message: discord.Message) -> bool:
+    emojis = [ctx.bot.get_emoji(config.YES_EMOJI_INT), ctx.bot.get_emoji(config.NO_EMOJI_INT)]
     for emoji in emojis:
         await message.add_reaction(emoji)
 
