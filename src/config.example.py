@@ -17,3 +17,10 @@ MONGO_DB_PORT = 27017  #27017
 
 #External Services Credential
 KOREAN_BOTS_TOKEN = "YOUR KOREANBOTS.DEV TOKEN"
+
+#Master Server Setting
+YES_EMOJI_STRING = "<a:yes:your_emoji_code>"
+NO_EMOJI_STRING = "<a:x_:your_emoji_code>"
+
+YES_EMOJI_INT = int(YES_EMOJI_STRING[-19:-1])
+NO_EMOJI_INT = int(NO_EMOJI_STRING[-19:-1])

@@ -13,6 +13,24 @@ async def setup_guild(bot, guild:discord.Guild):
         }
     try:
         await bot.db.guilds.insert_one({"guildId": guild.id, "member_log_config": base_config})
-        return {"guildId": guild.id}
+        return True
     except Exception as e:
         bot.logger.exception(f"Error on setup_guild: {e}")
+        print(f"Error on setup_guild: {e}")
+        return False
+
+async def setup_user(bot, user: discord.User):
+    base_db = {
+        "discordId": user.id,
+        "flags": {
+            "master": False,
+            "ban": False
+        }
+    }
+    try:
+        await bot.db.users.insert_one(base_db)
+        return True
+    except Exception as e:
+        bot.logger.exception(f"Error on setup_user: {e}")
+        print(f"Error on setup_user: {e}")
+        return False
