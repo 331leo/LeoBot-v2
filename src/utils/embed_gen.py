@@ -80,7 +80,7 @@ def prompt_embed(title: str, description: str, footer: Optional[str] = None, aut
                           )
     if author:
         embed.set_author(name=f"{author}", icon_url=str(author.avatar_url))
-    if footer:
+    if footer:  
         embed.set_footer(text=footer)
     return embed
 def info_embed(title: str, description: str, footer: Optional[str] = None, author:Optional[discord.User]=None):
@@ -98,6 +98,17 @@ def error_embed(title: str, description: str, footer: Optional[str] = None, auth
     embed = discord.Embed(title=title,
                           description=description,
                           color=utils.colormap['red'],
+                          timestamp=datetime.datetime.utcnow()
+                          )
+    if author:
+        embed.set_author(name=f"{author}", icon_url=str(author.avatar_url))
+    if footer:
+        embed.set_footer(text=footer)
+    return embed
+def waring_embed(title: str, description: str, footer: Optional[str] = None, author:Optional[discord.User]=None):
+    embed = discord.Embed(title=title,
+                          description=description,
+                          color=utils.colormap['lightpink'],
                           timestamp=datetime.datetime.utcnow()
                           )
     if author:

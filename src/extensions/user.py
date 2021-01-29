@@ -5,7 +5,9 @@ import importlib
 import utils
 from utils import exceptions
 import config
-
+import string
+import random
+import datetime
 class UserCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -21,6 +23,9 @@ class UserCog(commands.Cog):
     
     @commands.command(name="가입", aliases=["인증"])
     async def user_register(self, ctx):
+        '''
+        이용자 가입 명령어
+        '''
         db_user = await self.db.users.find_one({"discordId": ctx.author.id})
         if db_user:
             raise exceptions.PermError.AlreadyRegistered
@@ -32,6 +37,16 @@ class UserCog(commands.Cog):
         else:
             return await ctx.send(embed=utils.embed_gen.info_embed(f"{config.NO_EMOJI_STRING} 가입 취소됨", f"레오봇 가입을 취소하였습니다.\n`{config.COMMAND_PREFIXS[0]}가입`을 통해 다시 가입 창을 띄울수 있어요!", author=ctx.author))
     
+    @commands.command(name="문의", aliases=["건의"])
+    @commands.cooldown(1, 120, commands.BucketType.user)
+    async def contect_support(self, ctx, *, text):
+        if len(text) < 10:
+             await ctx.send(embed=utils.embed_gen.waring_embed(f"{config.NO_EMOJI_STRING} 문의 오류!", f"문의가 너무 짧습니다!\n조금 더 길게 적어주세요!", "최소 10자", ctx.author))
+             return ctx.command.reset_cooldown(ctx)
+        supportId=utils.random_string(6)
+        success = await utils.update_db(self.bot, "support", {"supportId": supportId}, {"supportId": supportId, "message": text, "user": ctx.author.id, "timestamp": datetime.datetime.now()})
+        await self.bot.get_channel(config.SUPPORT_LOG_CHANNEL).send(embed=utils.embed_gen.info_embed(f"문의코드: {supportId}",f"{ctx.author.mention}님이 보내신 문의입니다.\n```{text}```",f"{config.COMMAND_PREFIXS[0]}답변 <문의코드> <내용> 으로 답변",author=ctx.author))
+        return await ctx.send(embed=utils.embed_gen.success_embed(f"{config.YES_EMOJI_STRING} 문의 성공!", f"성공적으로 개발자에게 문의사항을 전달했습니다!\n답변은 DM으로 전송됩니다!", f"문의코드: {supportId}",author=ctx.author))
 
 def setup(bot):
     bot.add_cog(UserCog(bot))
