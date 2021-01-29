@@ -1,5 +1,5 @@
 from .setup import *
-from .colormap import colormap
+from .etc import colormap, random_string
 from .update_db import update_db
 from . import exceptions
 from . import checks

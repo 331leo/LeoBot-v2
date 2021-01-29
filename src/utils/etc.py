@@ -1,3 +1,6 @@
+import random
+import string
+
 colormap = {
     "aqua": 0x00f1ff,
     "hotpink": 0xFF69B4,
@@ -9,3 +12,7 @@ colormap = {
     "lightpink": 0xffc0cb,
     "yellow": 0xfcf794
 }
+
+def random_string(length):
+    pool = string.ascii_lowercase + string.digits
+    return ''.join(random.choice(pool) for i in range(length))
