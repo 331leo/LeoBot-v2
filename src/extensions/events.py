@@ -7,6 +7,8 @@ from utils import exceptions
 import utils
 from itertools import cycle
 import datetime
+import sys
+import traceback
 #await self.bot.db.guilds.find_one_and_update({"guildId": ctx.guild.id},{"$set":{"member_log_config": {"send_channel":ctx.channel.id,"join_leave":True,"change_nick":False,"change_roles":False}}})
 class EventsCog(commands.Cog):
     def __init__(self, bot):
@@ -25,24 +27,6 @@ class EventsCog(commands.Cog):
     def command_error_logger(self, ctx, text):
         self.logger.info(f"CMD_ERROR {text}: {ctx.author}({ctx.author.id}) => {ctx.guild}({ctx.guild.id}):{ctx.channel}({ctx.channel.id}) => {ctx.message.content}")
     
-    #커멘드 에러 핸들러
-    @commands.Cog.listener('on_command_error')
-    async def on_command_error(self, ctx: commands.Context, error: Exception):
-        print(error)
-        if isinstance(error, exceptions.PermError.NotRegistered):
-            self.command_error_logger(ctx, "가입되지 않은 계정")
-            await ctx.send(embed=utils.embed_gen.info_embed(ctx,"가입이 필요합니다",f"레오봇의 모든 기능을 이용하시려면,\n`{config.COMMAND_PREFIXS[0]}가입` 명령어를 통해 레오봇에 가입해주세요!",author=True))
-            return
-        
-        if isinstance(error, exceptions.PermError.NotBotMaster):
-            self.command_error_logger(ctx, "봇 관리자용 명령어 권한에러")
-            await ctx.send(embed=utils.embed_gen.NoUserPerm(ctx, "BotMaster"))
-            return
-        
-        if isinstance(error, exceptions.PermError.AlreadyRegistered):
-            self.command_error_logger(ctx, "이미 가입된 유저")
-            await ctx.send(embed=utils.embed_gen.error_embed(ctx, "이미 가입된 유저입니다!", f"이미 가입되어있는 계정입니다!\n`{config.COMMAND_PREFIXS[0]}도움말` 명령어로 레오봇의 더 많은 기능을 알아보세요!", f"탈퇴/개인정보 파기를 원하시면 `{config.COMMAND_PREFIXS[0]}문의` 명령어로 문의해주세요!", author=False))
-            return
 
     #멤버 이벤트 헨들러
     async def get_guild_listener_config(self, guild: discord.Guild):
@@ -86,5 +70,41 @@ class EventsCog(commands.Cog):
             if guild_config['change_roles']:
                 await self.bot.get_channel(guild_config['send_channel']).send(embed=utils.embed_gen.member_roles_change(member_before, member_after, guild_config))
 
+
+    @commands.Cog.listener('on_error')
+    async def on_error(self, event, *args, **kwargs):
+        excinfo = sys.exc_info()
+        errstr = f'{"".join(traceback.format_tb(excinfo[2]))}{excinfo[0].__name__}: {excinfo[1]}'
+        await self.bot.get_channel(config.ERROR_LOG_CHANNEL).send(embed=utils.embed_gen.error_embed(f"{config.NO_EMOJI_STRING} Error",errstr))
+        #self.logger.exception(str(event))
+
+    @commands.Cog.listener('on_guild_join')
+    async def on_guild_join(self, guild):
+        self.logger.info(f"서버 추가됨: {guild.name}({guild.id}), {len(guild.members)}명 => 길드 카운트: {len(self.bot.guilds)}")
+        await self.bot.get_channel(config.SERVER_LOG_CHANNEL).send(embed=utils.embed_gen.success_embed(f"{config.YES_EMOJI_STRING} 서버 추가됨",f"{guild.name}({guild.id}), {len(guild.members)}명\n길드 카운트: {len(self.bot.guilds)}"))
+
+    @commands.Cog.listener('on_guild_remove')
+    async def on_guild_remove(self, guild):
+        self.logger.info(f"서버 제거됨: {guild.name}({guild.id}), {len(guild.members)}명 => 길드 카운트: {len(self.bot.guilds)}")
+        await self.bot.get_channel(config.SERVER_LOG_CHANNEL).send(embed=utils.embed_gen.error_embed(f"{config.NO_EMOJI_STRING} 서버 제거됨",f"{guild.name}({guild.id}), {len(guild.members)}명\n길드 카운트: {len(self.bot.guilds)}"))
+
+    #커멘드 에러 핸들러
+    @commands.Cog.listener('on_command_error')
+    async def on_command_error(self, ctx: commands.Context, error: Exception):
+        print(error)
+        if isinstance(error, exceptions.PermError.NotRegistered):
+            self.command_error_logger(ctx, "가입되지 않은 계정")
+            await ctx.send(embed=utils.embed_gen.info_embed("가입이 필요합니다",f"레오봇의 모든 기능을 이용하시려면,\n`{config.COMMAND_PREFIXS[0]}가입` 명령어를 통해 레오봇에 가입해주세요!",author=ctx.author))
+            return
+        
+        if isinstance(error, exceptions.PermError.NotBotMaster):
+            self.command_error_logger(ctx, "봇 관리자용 명령어 권한에러")
+            await ctx.send(embed=utils.embed_gen.NoUserPerm(ctx, "BotMaster"))
+            return
+        
+        if isinstance(error, exceptions.PermError.AlreadyRegistered):
+            self.command_error_logger(ctx, "이미 가입된 유저")
+            await ctx.send(embed=utils.embed_gen.error_embed("이미 가입된 유저입니다!", f"이미 가입되어있는 계정입니다!\n`{config.COMMAND_PREFIXS[0]}도움말` 명령어로 레오봇의 더 많은 기능을 알아보세요!", f"탈퇴/개인정보 파기를 원하시면 `{config.COMMAND_PREFIXS[0]}문의` 명령어로 문의해주세요!", author=ctx.author))
+            return
 def setup(bot):
     bot.add_cog(EventsCog(bot))

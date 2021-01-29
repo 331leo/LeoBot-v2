@@ -62,10 +62,11 @@ class AdminCog(commands.Cog):
             rst = eval(arg)
         except:
             evalout = f'📥INPUT: ```python\n{arg}```\n💥EXCEPT: ```python\n{traceback.format_exc()}```\n ERROR'
+            print(traceback.format_exc())
             
         else:
             evalout = f'📥INPUT: ```python\n{arg}```\n📤OUTPUT: ```python\n{rst}```\n SUCCESS'
-            
+            print(rst)
         embed=discord.Embed(title='**💬 EVAL**', description=evalout)
         await ctx.send(embed=embed)
 
@@ -75,6 +76,7 @@ class AdminCog(commands.Cog):
             exec(arg)
         except:
             evalout = f'📥INPUT: ```python\n{arg}```\n💥EXCEPT: ```python\n{traceback.format_exc()}```\n ERROR'
+            print(traceback.format_exc())
             
         else:
             evalout = f'📥INPUT: ```python\n{arg}```\n SUCCESS'
@@ -88,12 +90,18 @@ class AdminCog(commands.Cog):
             rst = await eval(arg)
         except:
             evalout = f'📥INPUT: ```python\n{arg}```\n💥EXCEPT: ```python\n{traceback.format_exc()}```\n ERROR'
+            print(traceback.format_exc())
             
         else:
             evalout = f'📥INPUT: ```python\n{arg}```\n📤OUTPUT: ```python\n{rst}```\n SUCCESS'
+            print(rst)
             
         embed=discord.Embed(title='**💬 AWAIT**',  description=evalout)
         await ctx.send(embed=embed)
+    #DB업데이트 테스트
+    @commands.command()
+    async def test(self, ctx):
+        await ctx.send(await utils.update_db(self.bot,{"guildId": ctx.guild.id}, {"change_roles": True}, "member_log_config"))
 
 def setup(bot):
     bot.add_cog(AdminCog(bot))
