@@ -20,3 +20,4 @@ class PermError:
     class AlreadyRegistered(commands.CheckFailure):
         def __str__(self):
             return "Already Registered User"
+    

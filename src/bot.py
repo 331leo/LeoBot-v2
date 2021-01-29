@@ -16,8 +16,6 @@ class LeoBot(commands.AutoShardedBot):
     async def on_ready(self):
         self.logger.info(f"Logged in as {self.user}, Bot Version {config.VERSION}")
 
-    async def on_error(self, event, *args, **kwargs):
-        self.logger.exception(str(event))
 
     def __init__(self, logger):
         intents = discord.Intents.default()
