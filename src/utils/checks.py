@@ -27,3 +27,4 @@ class permissions:
         if db_user['flags']['ban']:
             raise exceptions.PermError.BlacklistedUser
         return True
+    

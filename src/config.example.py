@@ -1,6 +1,6 @@
 #Bot Settings
 VERSION = "0.0.0"
-EXTENSION_LIST = ["extensions.admin"]
+EXTENSION_LIST = ["extensions.admin", "extensions.events", "extensions.etc","extensions.moderation","extensions.util"]
 COMMAND_PREFIXS = ["=", "ㅇㅇ아"]
 BOT_STATUS = ["=도움말을 입력해보세요!", "{server_count}서버 | {user_count}유저 ", "LeoBot-v2: {version}"]
 

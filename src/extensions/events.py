@@ -107,9 +107,20 @@ class EventsCog(commands.Cog):
             self.command_error_logger(ctx, "이미 가입된 유저")
             await ctx.send(embed=utils.embed_gen.error_embed("이미 가입된 유저입니다!", f"이미 가입되어있는 계정입니다!\n`{config.COMMAND_PREFIXS[0]}도움말` 명령어로 레오봇의 더 많은 기능을 알아보세요!", f"탈퇴/개인정보 파기를 원하시면 `{config.COMMAND_PREFIXS[0]}문의` 명령어로 문의해주세요!", author=ctx.author))
             return
-        elif isinstance(error, commands.errors.CommandOnCooldown):
+        if isinstance(error, commands.errors.MissingPermissions):
+            for perm in error.missing_perms:
+                permtext = utils.discord_perms.get(perm, perm)
+                await ctx.send(embed=utils.embed_gen.NoUserPerm(ctx, permtext))
+            return
+        if isinstance(error, commands.errors.CommandOnCooldown):
             if int(error.retry_after) > 1:
                 await ctx.send(embed=utils.embed_gen.waring_embed(f"{config.NO_EMOJI_STRING} 명령어 쿨타임",f"`{math.ceil(error.retry_after)}초`후 다시 사용해주세요!"))
             return
+        if isinstance(error, (commands.errors.MemberNotFound, commands.errors.UserNotFound)):
+            self.command_error_logger(ctx, "파라미터 유저 불러오기 에러")
+            await ctx.send(embed=utils.embed_gen.error_embed(f"{config.NO_EMOJI_STRING} 찾을수 없는 유저입니다", ""))
+            return
+        
+        self.command_error_logger(ctx, f"!!알 수 없는 에러!!: {type(error)}, {error}")
 def setup(bot):
     bot.add_cog(EventsCog(bot))

@@ -8,7 +8,7 @@ import config
 import string
 import random
 import datetime
-class UserCog(commands.Cog):
+class EtcCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db
@@ -40,6 +40,9 @@ class UserCog(commands.Cog):
     @commands.command(name="문의", aliases=["건의"])
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def contect_support(self, ctx, *, text):
+        """
+        :param text: 문의사항 텍스트
+        """
         if len(text) < 10:
              await ctx.send(embed=utils.embed_gen.waring_embed(f"{config.NO_EMOJI_STRING} 문의 오류!", f"문의가 너무 짧습니다!\n조금 더 길게 적어주세요!", "최소 10자", ctx.author))
              return ctx.command.reset_cooldown(ctx)
@@ -49,4 +52,4 @@ class UserCog(commands.Cog):
         return await ctx.send(embed=utils.embed_gen.success_embed(f"{config.YES_EMOJI_STRING} 문의 성공!", f"성공적으로 개발자에게 문의사항을 전달했습니다!\n답변은 DM으로 전송됩니다!", f"문의코드: {supportId}",author=ctx.author))
 
 def setup(bot):
-    bot.add_cog(UserCog(bot))
+    bot.add_cog(EtcCog(bot))
