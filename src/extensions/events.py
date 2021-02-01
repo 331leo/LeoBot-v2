@@ -26,7 +26,10 @@ class EventsCog(commands.Cog):
         await self.bot.change_presence(activity=discord.Game(next(self.statusList).format(version=self.bot.version, server_count=len(self.bot.guilds), user_count=len(self.bot.users))))
     
     def command_error_logger(self, ctx, text):
+        if ctx.channel.type == discord.ChannelType.private:
+            return self.logger.info(f"CMD_ERROR {text}: {ctx.author}({ctx.author.id}) => {ctx.channel}({ctx.channel.id}) => {ctx.message.content}")
         self.logger.info(f"CMD_ERROR {text}: {ctx.author}({ctx.author.id}) => {ctx.guild}({ctx.guild.id}):{ctx.channel}({ctx.channel.id}) => {ctx.message.content}")
+        
     
 
     #멤버 이벤트 헨들러
@@ -95,18 +98,18 @@ class EventsCog(commands.Cog):
         print(error)
         if isinstance(error, exceptions.PermError.NotRegistered):
             self.command_error_logger(ctx, "가입되지 않은 계정")
-            await ctx.send(embed=utils.embed_gen.info_embed("가입이 필요합니다",f"레오봇의 모든 기능을 이용하시려면,\n`{config.COMMAND_PREFIXS[0]}가입` 명령어를 통해 레오봇에 가입해주세요!",author=ctx.author))
-            return
+            return await ctx.send(embed=utils.embed_gen.info_embed("가입이 필요합니다",f"레오봇의 모든 기능을 이용하시려면,\n`{config.COMMAND_PREFIXS[0]}가입` 명령어를 통해 레오봇에 가입해주세요!",author=ctx.author))
+            
         
         if isinstance(error, exceptions.PermError.NotBotMaster):
             self.command_error_logger(ctx, "봇 관리자용 명령어 권한에러")
-            await ctx.send(embed=utils.embed_gen.NoUserPerm(ctx, "BotMaster"))
-            return
+            return await ctx.send(embed=utils.embed_gen.NoUserPerm(ctx, "BotMaster"))
+            
         
         if isinstance(error, exceptions.PermError.AlreadyRegistered):
             self.command_error_logger(ctx, "이미 가입된 유저")
-            await ctx.send(embed=utils.embed_gen.error_embed("이미 가입된 유저입니다!", f"이미 가입되어있는 계정입니다!\n`{config.COMMAND_PREFIXS[0]}도움말` 명령어로 레오봇의 더 많은 기능을 알아보세요!", f"탈퇴/개인정보 파기를 원하시면 `{config.COMMAND_PREFIXS[0]}문의` 명령어로 문의해주세요!", author=ctx.author))
-            return
+            return await ctx.send(embed=utils.embed_gen.error_embed("이미 가입된 유저입니다!", f"이미 가입되어있는 계정입니다!\n`{config.COMMAND_PREFIXS[0]}도움말` 명령어로 레오봇의 더 많은 기능을 알아보세요!", f"탈퇴/개인정보 파기를 원하시면 `{config.COMMAND_PREFIXS[0]}문의` 명령어로 문의해주세요!", author=ctx.author))
+            
         if isinstance(error, commands.errors.MissingPermissions):
             for perm in error.missing_perms:
                 permtext = utils.discord_perms.get(perm, perm)
@@ -118,9 +121,14 @@ class EventsCog(commands.Cog):
             return
         if isinstance(error, (commands.errors.MemberNotFound, commands.errors.UserNotFound)):
             self.command_error_logger(ctx, "파라미터 유저 불러오기 에러")
-            await ctx.send(embed=utils.embed_gen.error_embed(f"{config.NO_EMOJI_STRING} 찾을수 없는 유저입니다", ""))
-            return
-        
+            return await ctx.send(embed=utils.embed_gen.error_embed(f"{config.NO_EMOJI_STRING} 찾을수 없는 유저입니다", ""))
+            
+        if isinstance(error, commands.MissingRequiredArgument):
+            self.command_error_logger(ctx, "필수 파라미터 누락")
+            return await ctx.send(embed=utils.embed_gen.waring_embed(f":wrench: 잘못된 입력 : {ctx.command.name}",f"```{ctx.command.help}```\n올바른 사용법: `{ctx.command.usage}`",author=ctx.author))
+        if isinstance(error, commands.PrivateMessageOnly):
+            self.command_error_logger(ctx, "DM 전용 명령어")
+            return await ctx.send(embed=utils.embed_gen.waring_embed(f"{config.NO_EMOJI_STRING} DM 전용 명령어 입니다!","봇의 DM으로 명령어를 사용해주세요!"))
         self.command_error_logger(ctx, f"!!알 수 없는 에러!!: {type(error)}, {error}")
 def setup(bot):
     bot.add_cog(EventsCog(bot))
