@@ -15,7 +15,7 @@ class UtilCog(commands.Cog):
 
     async def cog_check(self, ctx):
         return await self.check.registered(ctx) and await self.check.blacklist(ctx)
-    @commands.command(name="프사",usage=f"{config.COMMAND_PREFIXS[0]}프사 (유저이름 또는 멘션)")
+    @commands.command(name="프사",usage=f"유저이름 또는 멘션")
     async def user_profilepic_command(self, ctx, *, user:discord.User = None):
         """
         사용자의 프로필 사진을 확대하여 보여줍니다.
@@ -25,7 +25,7 @@ class UtilCog(commands.Cog):
         embed.set_image(url=str(user.avatar_url))
         
         await ctx.send(embed=embed)
-    @commands.command(name="핑", aliases=["ping"], usage=f"{config.COMMAND_PREFIXS[0]}핑")
+    @commands.command(name="핑", aliases=["ping"])
     async def ping_command(self, ctx):
         """
         봇의 지연시간을 확인합니다.
@@ -38,7 +38,7 @@ class UtilCog(commands.Cog):
             text += f"Shard#{shard.id}: {int(shard.latency*1000)}ms\n"
         text += "```"
         await ctx.send(embed=utils.embed_gen.prompt_embed("Pong!",text))
-    @commands.command(name="자가진단", usage=f"{config.COMMAND_PREFIXS[0]}자가진단")
+    @commands.command(name="자가진단")
     async def covid_check_command(self, ctx):
         """
         등록된 정보를 바탕으로 코로나 자가진단을 수행합니다.
@@ -49,7 +49,7 @@ class UtilCog(commands.Cog):
         data = await hcskr.asyncTokenSelfCheck(data.get("covid-check", "None"))
         return await ctx.send(embed=utils.embed_gen.success_embed(f"{config.YES_EMOJI_STRING}자가진단 성공!", "", author=ctx.author))
 
-    @commands.command(name="자가진단등록", usage=f"{config.COMMAND_PREFIXS[0]}자가진단등록 지역 학교급 학교이름 이름 생년월일6자 자가진단비밀번호")
+    @commands.command(name="자가진단등록", usage=f"지역 학교급 학교이름 이름 생년월일6자 자가진단비밀번호")
     @commands.dm_only()
     async def register_covid_check_command(self, ctx, area, level, schoolname, name, birthday, password):
         """

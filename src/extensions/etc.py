@@ -37,11 +37,11 @@ class EtcCog(commands.Cog):
         else:
             return await ctx.send(embed=utils.embed_gen.info_embed(f"{config.NO_EMOJI_STRING} 가입 취소됨", f"레오봇 가입을 취소하였습니다.\n`{config.COMMAND_PREFIXS[0]}가입`을 통해 다시 가입 창을 띄울수 있어요!", author=ctx.author))
     
-    @commands.command(name="문의", aliases=["건의"])
+    @commands.command(name="문의", aliases=["건의"], usage=f"문의할내용")
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def contect_support(self, ctx, *, text):
         """
-        :param text: 문의사항 텍스트
+        봇 개발자에게 문의를 전달합니다.
         """
         if len(text) < 10:
              await ctx.send(embed=utils.embed_gen.waring_embed(f"{config.NO_EMOJI_STRING} 문의 오류!", f"문의가 너무 짧습니다!\n조금 더 길게 적어주세요!", "최소 10자", ctx.author))

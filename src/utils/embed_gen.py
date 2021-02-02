@@ -61,6 +61,14 @@ def NoUserPerm(ctx, perm):
                           )
     embed.set_footer(text=f"`{perm}` 권한 필요")
     return embed
+def NoBotPerm(ctx, perm):
+    embed = discord.Embed(title=f"{config.NO_EMOJI_STRING} 봇 권한 부족",
+                          description=f"그 작업을 실행하기에 {ctx.guild.me.mention}은 너무 작고 하찮습니다..",
+                          color=utils.colormap['red'],
+                          timestamp=datetime.datetime.utcnow()
+                          )
+    embed.set_footer(text=f"`{perm}` 권한 필요")
+    return embed
 def success_embed(title: str, description: str, footer: Optional[str] = None, author:Optional[discord.User]=None):
     embed = discord.Embed(title=title,
                           description=description,

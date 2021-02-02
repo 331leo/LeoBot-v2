@@ -22,7 +22,8 @@ class AdminCog(commands.Cog):
             cmds.add_check(self.check.registered)
             cmds.add_check(self.check.master)
         
-        
+
+
     @commands.command(name="reload", aliases=["리로드"], brief="모듈 핫리로드")
     async def reload(self, ctx: commands.Context, path):
         if path == "*":

@@ -84,6 +84,7 @@ class EventsCog(commands.Cog):
 
     @commands.Cog.listener('on_guild_join')
     async def on_guild_join(self, guild):
+        await utils.setup_guild(self.bot, guild)
         self.logger.info(f"서버 추가됨: {guild.name}({guild.id}), {len(guild.members)}명 => 길드 카운트: {len(self.bot.guilds)}")
         await self.bot.get_channel(config.SERVER_LOG_CHANNEL).send(embed=utils.embed_gen.success_embed(f"{config.YES_EMOJI_STRING} 서버 추가됨",f"{guild.name}(`{guild.id}`)\n멤버: `{len(guild.members)}명`, 총 길드 수: `{len(self.bot.guilds)}개`"))
 
@@ -111,10 +112,17 @@ class EventsCog(commands.Cog):
             return await ctx.send(embed=utils.embed_gen.error_embed("이미 가입된 유저입니다!", f"이미 가입되어있는 계정입니다!\n`{config.COMMAND_PREFIXS[0]}도움말` 명령어로 레오봇의 더 많은 기능을 알아보세요!", f"탈퇴/개인정보 파기를 원하시면 `{config.COMMAND_PREFIXS[0]}문의` 명령어로 문의해주세요!", author=ctx.author))
             
         if isinstance(error, commands.errors.MissingPermissions):
+            permtext=""
             for perm in error.missing_perms:
-                permtext = utils.discord_perms.get(perm, perm)
-                await ctx.send(embed=utils.embed_gen.NoUserPerm(ctx, permtext))
-            return
+                permtext += utils.discord_perms.get(perm, perm)
+            return await ctx.send(embed=utils.embed_gen.NoUserPerm(ctx, permtext))
+            
+        if isinstance(error, commands.BotMissingPermissions):
+            permtext=""
+            for perm in error.missing_perms:
+                permtext += utils.discord_perms.get(perm, perm)
+            return await ctx.send(embed=utils.embed_gen.NoBotPerm(ctx, permtext))
+            
         if isinstance(error, commands.errors.CommandOnCooldown):
             if int(error.retry_after) > 1:
                 await ctx.send(embed=utils.embed_gen.waring_embed(f"{config.NO_EMOJI_STRING} 명령어 쿨타임",f"`{math.ceil(error.retry_after)}초`후 다시 사용해주세요!"))
@@ -125,7 +133,7 @@ class EventsCog(commands.Cog):
             
         if isinstance(error, commands.MissingRequiredArgument):
             self.command_error_logger(ctx, "필수 파라미터 누락")
-            return await ctx.send(embed=utils.embed_gen.waring_embed(f":wrench: 잘못된 입력 : {ctx.command.name}",f"```{ctx.command.help}```\n올바른 사용법: `{ctx.command.usage}`",author=ctx.author))
+            return await ctx.send(embed=utils.embed_gen.waring_embed(f":wrench: 잘못된 입력 : {ctx.command}",f"```{ctx.command.help}```\n올바른 사용법: `{ctx.prefix}{ctx.command} {ctx.command.usage}`",author=ctx.author))
         if isinstance(error, commands.PrivateMessageOnly):
             self.command_error_logger(ctx, "DM 전용 명령어")
             return await ctx.send(embed=utils.embed_gen.waring_embed(f"{config.NO_EMOJI_STRING} DM 전용 명령어 입니다!","봇의 DM으로 명령어를 사용해주세요!"))
